@@ -18,8 +18,8 @@ module.exports = (
 	<Router history={browserHistory} >
         <Route path="/" component={Layout}>
             <IndexRoute component={QuizPlayground} />
-            <Route path="/new" component={NewQuiz} />
-            <Route path="/view/:name" component={ViewQuiz} />
+            <Route path="new" component={NewQuiz} />
+            <Route path="view/:name" component={ViewQuiz} />
         </Route>
     </Router>
 );

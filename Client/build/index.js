@@ -22303,8 +22303,8 @@
 	        Route,
 	        { path: '/', component: Layout },
 	        React.createElement(IndexRoute, { component: QuizPlayground }),
-	        React.createElement(Route, { path: '/new', component: NewQuiz }),
-	        React.createElement(Route, { path: '/view/:name', component: ViewQuiz })
+	        React.createElement(Route, { path: 'new', component: NewQuiz }),
+	        React.createElement(Route, { path: 'view/:name', component: ViewQuiz })
 	    )
 	);
 
@@ -27605,7 +27605,7 @@
 								null,
 								_react2.default.createElement(
 									_reactRouter.Link,
-									{ to: 'new' },
+									{ to: '/new' },
 									'New Quiz'
 								)
 							)
@@ -27630,7 +27630,7 @@
 								{ className: 'active' },
 								_react2.default.createElement(
 									_reactRouter.Link,
-									{ to: 'new' },
+									{ to: '/new' },
 									'New Quiz'
 								)
 							)
@@ -27654,7 +27654,7 @@
 								null,
 								_react2.default.createElement(
 									_reactRouter.Link,
-									{ to: 'new' },
+									{ to: '/new' },
 									'New Quiz'
 								)
 							)
@@ -30094,11 +30094,11 @@
 			var _this = _possibleConstructorReturn(this, (NewQuiz.__proto__ || Object.getPrototypeOf(NewQuiz)).call(this, props));
 
 			_this.state = {
-				isLoading: false,
+				isLoading: true,
 				name: '',
 				description: '',
 				quiz_pwd: '',
-				errormsg: '',
+				errormsgs: [],
 				successmsg: ''
 			};
 			_this.handleFormChange = _this.handleFormChange.bind(_this);
@@ -30107,6 +30107,11 @@
 		}
 
 		_createClass(NewQuiz, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				this.setState({ isLoading: false });
+			}
+		}, {
 			key: 'handleFormChange',
 			value: function handleFormChange(event) {
 				console.log(this.state);
@@ -30125,17 +30130,24 @@
 		}, {
 			key: 'validateForm',
 			value: function validateForm() {
-				if (this.state.name.length > 1) {
-					this.setState({ errormsg: '' });
-					return true;
-				} else {
-					return false;
+				var retBool = true;
+				var currErrMsgs = [];
+
+				if (this.state.name.length < 4) {
+					currErrMsgs.push('Quiz Name is too short');
+					retBool = false;
 				}
-			}
-		}, {
-			key: 'addErrors',
-			value: function addErrors() {
-				this.setState({ errormsg: 'Please add the Quiz name.  The name must be longer than 1 character' });
+				if (this.state.description.length < 6) {
+					currErrMsgs.push('Quiz Description is too short');
+					retBool = false;
+				}
+				if (this.state.quiz_pwd.length < 6) {
+					currErrMsgs.push('Quiz Password is too short');
+					retBool = false;
+				}
+				this.setState({ errormsgs: currErrMsgs });
+
+				return retBool;
 			}
 		}, {
 			key: 'handleFormSubmit',
@@ -30145,16 +30157,19 @@
 				event.preventDefault();
 				this.setState({ isLoading: true });
 				if (this.validateForm()) {
-					var contactEndUrl = '/new/account/';
-					ajax.post(contactEndUrl).set({ 'Content-Type': 'application/json' }).send(this.state).end(function (error, response) {
-						_this2.setState({ isLoading: false });
+					var newQuizBasicURL = '/new/quiz/basic';
+					ajax.post(newQuizBasicURL).set({ 'Content-Type': 'application/json' }).send({
+						name: this.state.name,
+						description__c: this.state.description,
+						edit_password__c: this.state.quiz_pwd
+					}).end(function (error, response) {
 						if (!error && response.status == 200) {
 							console.log('success');
 							console.log(response);
 							_this2.setState({
 								isLoading: false,
 								name: '',
-								successmsg: 'Success! Account added.',
+								successmsg: 'Success! Now add your questions.',
 								errormsg: ''
 							});
 						} else {
@@ -30169,19 +30184,21 @@
 						}
 					});
 				} else {
-					this.addErrors();
+					// this.addErrors();
 					this.setState({ isLoading: false });
 				}
 			}
 		}, {
 			key: 'msgMarkup',
 			value: function msgMarkup() {
-				if (this.state.errormsg != '') {
-					return _react2.default.createElement(
-						'div',
-						{ className: 'alert alert-danger', role: 'alert' },
-						this.state.errormsg
-					);
+				if (this.state.errormsgs.length > 0) {
+					return this.state.errormsgs.map(function (dat, index) {
+						return _react2.default.createElement(
+							'div',
+							{ key: index, className: 'alert alert-danger', role: 'alert' },
+							dat
+						);
+					});
 				} else if (this.state.successmsg != '') {
 					return _react2.default.createElement(
 						'div',
@@ -30211,7 +30228,7 @@
 								_react2.default.createElement(
 									'button',
 									{ type: 'submit', className: 'btn btn-cSend disabled' },
-									'Send'
+									'Save & Next'
 								)
 							)
 						)
@@ -30312,7 +30329,15 @@
 							)
 						)
 					),
-					this.msgMarkup(),
+					_react2.default.createElement(
+						'div',
+						{ className: 'row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'text-center' },
+							this.msgMarkup()
+						)
+					),
 					this.markup()
 				);
 			}

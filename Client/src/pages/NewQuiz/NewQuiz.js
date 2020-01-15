@@ -8,15 +8,19 @@ class NewQuiz extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-            isLoading: false,
+            isLoading: true,
             name: '',
 			description: '',
 			quiz_pwd: '',
-            errormsg: '',
+            errormsgs: [],
             successmsg: ''
         };
         this.handleFormChange = this.handleFormChange.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
+	}
+
+	componentWillMount() {
+		this.setState({isLoading: false});
 	}
 
 	handleFormChange(event) {
@@ -34,33 +38,44 @@ class NewQuiz extends React.Component {
         }
 	}
 	validateForm() {
-		if(this.state.name.length > 1) {
-			this.setState({errormsg: ''});
-			return true;
-		} else {
-			return false;
+		let retBool = true;
+		let currErrMsgs = [];
+
+		if(this.state.name.length < 4) {
+			currErrMsgs.push('Quiz Name is too short');
+			retBool = false;
 		}
-	}
-	addErrors() {
-		this.setState({errormsg: 'Please add the Quiz name.  The name must be longer than 1 character'});
+		if(this.state.description.length < 6) {
+			currErrMsgs.push('Quiz Description is too short');
+			retBool = false;
+		}
+		if(this.state.quiz_pwd.length < 6) {
+			currErrMsgs.push('Quiz Password is too short');
+			retBool = false;
+		}
+		this.setState({errormsgs: currErrMsgs});
+
+		return retBool;
 	}
 	handleFormSubmit(event) {
         event.preventDefault();
 		this.setState({isLoading: true});
 		if(this.validateForm()) {
-			let contactEndUrl = '/new/account/';
-			ajax.post(contactEndUrl)
+			let newQuizBasicURL = '/new/quiz/basic';
+			ajax.post(newQuizBasicURL)
 				.set({ 'Content-Type': 'application/json' })
-				.send(this.state)
-				.end((error, response) => {
-                    this.setState({isLoading: false});
+				.send({
+					name: this.state.name,
+					description__c: this.state.description,
+					edit_password__c: this.state.quiz_pwd
+				}).end((error, response) => {
                     if(!error && response.status == 200) {
                         console.log('success');
                         console.log(response);
 						this.setState({
                             isLoading: false,
                             name: '',
-							successmsg: 'Success! Account added.',
+							successmsg: 'Success! Now add your questions.',
                             errormsg: ''
 						});
                     } else {
@@ -75,17 +90,19 @@ class NewQuiz extends React.Component {
                     }
                 });
 		} else {
-			this.addErrors();
+			// this.addErrors();
 			this.setState({isLoading: false});
 		}
 	}
     msgMarkup() {
-        if(this.state.errormsg != '') {
-            return (
-                <div class="alert alert-danger" role="alert">
-                    { this.state.errormsg }
-                </div>
-            );
+        if(this.state.errormsgs.length > 0) {
+            return this.state.errormsgs.map((dat, index) => {
+				return (
+					<div key={index} class="alert alert-danger" role="alert">
+	                    {dat}
+	                </div>
+				);
+			});
         } else if(this.state.successmsg != '') {
             return (
                 <div class="alert alert-success" role="alert">
@@ -103,7 +120,7 @@ class NewQuiz extends React.Component {
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
-							<button type="submit" class="btn btn-cSend disabled">Send</button>
+							<button type="submit" class="btn btn-cSend disabled">Save &amp; Next</button>
 						</div>
 					</div>
 				</form>
@@ -155,7 +172,11 @@ class NewQuiz extends React.Component {
 	                    <h1>Add a new Quiz</h1>
 	                </div>
 		    	</div>
-                { this.msgMarkup() }
+				<div class="row">
+	                <div class="text-center">
+	                    { this.msgMarkup() }
+	                </div>
+		    	</div>
 				{ this.markup() }
 			</div>
 		);

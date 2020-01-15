@@ -14,7 +14,7 @@ class Layout extends React.Component {
 		let currLocc = this.props.location.pathname;
 		console.log(currLocc);
 		console.log(this.props.location);
-		
+
 		if(currLocc.includes('/view')) {
 			currLocc = '/view'
 		}
@@ -25,7 +25,7 @@ class Layout extends React.Component {
 				return (
 					<ul class="nav navbar-nav navbar-right">
 						<li class="active"><Link to='/'>Quiz's</Link></li>
-						<li><Link to='new'>New Quiz</Link></li>
+						<li><Link to='/new'>New Quiz</Link></li>
 					</ul>
 				);
 				break;
@@ -34,7 +34,7 @@ class Layout extends React.Component {
 				return (
 					<ul class="nav navbar-nav navbar-right">
 						<li><Link to='/'>Quiz's</Link></li>
-						<li class="active"><Link to='new'>New Quiz</Link></li>
+						<li class="active"><Link to='/new'>New Quiz</Link></li>
 					</ul>
 				);
 				break;
@@ -42,7 +42,7 @@ class Layout extends React.Component {
 				return (
 					<ul class="nav navbar-nav navbar-right">
 						<li><Link to='/'>Quiz's</Link></li>
-						<li><Link to='new'>New Quiz</Link></li>
+						<li><Link to='/new'>New Quiz</Link></li>
 					</ul>
 				);
 				break;

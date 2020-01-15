@@ -6,8 +6,10 @@
 
 let express = require('express'),
     FetchData = require('./FetchData'),
+    AddData = require('./AddData'),
     ApiRoutes = express.Router(),
-    DataFetcher = new FetchData();
+    DataFetcher = new FetchData(),
+    DataAdder = new AddData();
 
 
 
@@ -21,6 +23,8 @@ let express = require('express'),
 ApiRoutes.get("/fetch/quizs/", DataFetcher.FetchQuizs);
 // get quiz
 ApiRoutes.get("/fetch/quiz/:name", DataFetcher.FetchQuiz);
+// add quiz
+ApiRoutes.post("/new/quiz/basic", DataAdder.AddQuizBasicInfo);
 
 /*
  * export
