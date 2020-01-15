@@ -10,31 +10,35 @@ class ViewQuiz extends React.Component {
 		super(props);
 		this.state = {
             isLoading: false,
-            quizName: ''
+            quizName: '',
+			id: '',
+			sfid: '',
+			description__c: '',
+			edit_password__c: '',
+			picture_url__c: ''
         };
 	}
 
 	componentWillMount() {
         console.log('mounting view quiz cmp');
-        let urlstrpart = encodeURIComponent(this.props.params.name);
-        this.setState({isLoading: true, quizName: urlstrpart});
-        // console.log(this.props);
-        // console.log(this.props.params.name);
-        // this.setState({quizName: this.props.params.name})
-        // let currLocc = this.props.location.pathname;
-		// console.log(currLocc);
-		// console.log(this.props.location);
+        this.setState({isLoading: true, quizName: this.props.params.name});
 
-        let fetchQuizUrl = '/fetch/quiz/' + encodeURI(urlstrpart);
+        let fetchQuizUrl = '/fetch/quiz/' + encodeURI(this.props.params.name);
         console.log(fetchQuizUrl);
         ajax.get(fetchQuizUrl)
         	.end((error, response) => {
           		if (!error && response) {
-                    // console.log(JSON.parse(response.text));
-	              	// this.setState({
-	                // 	quizs: JSON.parse(response.text),
-                    //     searchQuizs: JSON.parse(response.text)
-	            	// });
+                    console.log(JSON.parse(response.text));
+					let respObj = JSON.parse(response.text);
+	              	this.setState({
+	                	isLoading: false,
+                        quizName: respObj[0].name,
+						id: respObj[0].id,
+						sfid: respObj[0].sfid,
+						description__c: respObj[0].description__c,
+						edit_password__c: respObj[0].edit_password__c,
+						picture_url__c: respObj[0].picture_url__c
+	            	});
           		} else {
               		console.log(`Error fetching data`, error);
           		}

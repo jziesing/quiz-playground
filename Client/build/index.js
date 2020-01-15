@@ -27894,7 +27894,8 @@
 	                        )
 	                    ));
 	                } else {
-	                    var urlReadyStr2 = '/view/' + this.state.searchQuizs[i + 1].name.replace(/\s+/g, '-').toLowerCase();
+	                    // var urlReadyStr2 = '/view/' + this.state.searchQuizs[i + 1].name.replace(/\s+/g, '-').toLowerCase();
+	                    var urlReadyStr2 = '/view/' + encodeURI(this.state.searchQuizs[i + 1].name);
 	                    retArr.push(_react2.default.createElement(
 	                        'div',
 	                        { key: i, className: 'row' },
@@ -30095,6 +30096,8 @@
 			_this.state = {
 				isLoading: false,
 				name: '',
+				description: '',
+				quiz_pwd: '',
 				errormsg: '',
 				successmsg: ''
 			};
@@ -30111,6 +30114,12 @@
 					case 'name':
 						this.setState({ name: event.target.value });
 						break;
+					case 'description':
+						this.setState({ description: event.target.value });
+						break;
+					case 'quiz_pwd':
+						this.setState({ quiz_pwd: event.target.value });
+						break;
 				}
 			}
 		}, {
@@ -30126,7 +30135,7 @@
 		}, {
 			key: 'addErrors',
 			value: function addErrors() {
-				this.setState({ errormsg: 'Please add the Account name.  The name must be longer than 1 character' });
+				this.setState({ errormsg: 'Please add the Quiz name.  The name must be longer than 1 character' });
 			}
 		}, {
 			key: 'handleFormSubmit',
@@ -30217,12 +30226,54 @@
 							_react2.default.createElement(
 								'label',
 								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
-								'Account Name'
+								'Quiz Name'
 							),
 							_react2.default.createElement(
 								'div',
 								{ className: 'col-sm-10' },
-								_react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name', placeholder: 'account name', onChange: this.handleFormChange, value: this.state.name })
+								_react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name', placeholder: 'quiz name', onChange: this.handleFormChange, value: this.state.name })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
+								'Quiz Description'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-10' },
+								_react2.default.createElement('textarea', { rows: '4', type: 'text', className: 'form-control', id: 'description', placeholder: 'quiz description', onChange: this.handleFormChange, value: this.state.description })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
+								'Quiz Picture'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-10' },
+								_react2.default.createElement('input', { type: 'file', name: 'quizPic', id: 'quizPic' })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
+								'Quiz Admin Password to Edit'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-10' },
+								_react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'quiz_pwd', placeholder: 'quiz admin password', onChange: this.handleFormChange, value: this.state.quiz_pwd })
 							)
 						),
 						_react2.default.createElement(
@@ -30234,7 +30285,7 @@
 								_react2.default.createElement(
 									'button',
 									{ type: 'submit', className: 'btn btn-cSend' },
-									'Send'
+									'Save & Next'
 								)
 							)
 						)
@@ -30257,7 +30308,7 @@
 							_react2.default.createElement(
 								'h1',
 								null,
-								'Add a new Account'
+								'Add a new Quiz'
 							)
 						)
 					),
@@ -30311,7 +30362,12 @@
 
 			_this.state = {
 				isLoading: false,
-				quizName: ''
+				quizName: '',
+				id: '',
+				sfid: '',
+				description__c: '',
+				edit_password__c: '',
+				picture_url__c: ''
 			};
 			return _this;
 		}
@@ -30319,25 +30375,26 @@
 		_createClass(ViewQuiz, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				console.log('mounting view quiz cmp');
-				var urlstrpart = encodeURIComponent(this.props.params.name);
-				this.setState({ isLoading: true, quizName: urlstrpart });
-				// console.log(this.props);
-				// console.log(this.props.params.name);
-				// this.setState({quizName: this.props.params.name})
-				// let currLocc = this.props.location.pathname;
-				// console.log(currLocc);
-				// console.log(this.props.location);
+				var _this2 = this;
 
-				var fetchQuizUrl = '/fetch/quiz/' + encodeURI(urlstrpart);
+				console.log('mounting view quiz cmp');
+				this.setState({ isLoading: true, quizName: this.props.params.name });
+
+				var fetchQuizUrl = '/fetch/quiz/' + encodeURI(this.props.params.name);
 				console.log(fetchQuizUrl);
 				ajax.get(fetchQuizUrl).end(function (error, response) {
 					if (!error && response) {
-						// console.log(JSON.parse(response.text));
-						// this.setState({
-						// 	quizs: JSON.parse(response.text),
-						//     searchQuizs: JSON.parse(response.text)
-						// });
+						console.log(JSON.parse(response.text));
+						var respObj = JSON.parse(response.text);
+						_this2.setState({
+							isLoading: false,
+							quizName: respObj[0].name,
+							id: respObj[0].id,
+							sfid: respObj[0].sfid,
+							description__c: respObj[0].description__c,
+							edit_password__c: respObj[0].edit_password__c,
+							picture_url__c: respObj[0].picture_url__c
+						});
 					} else {
 						console.log('Error fetching data', error);
 					}

@@ -10,6 +10,8 @@ class NewQuiz extends React.Component {
 		this.state = {
             isLoading: false,
             name: '',
+			description: '',
+			quiz_pwd: '',
             errormsg: '',
             successmsg: ''
         };
@@ -23,6 +25,12 @@ class NewQuiz extends React.Component {
             case 'name':
                 this.setState({name: event.target.value});
                 break;
+			case 'description':
+                this.setState({description: event.target.value});
+                break;
+			case 'quiz_pwd':
+                this.setState({quiz_pwd: event.target.value});
+                break;
         }
 	}
 	validateForm() {
@@ -34,7 +42,7 @@ class NewQuiz extends React.Component {
 		}
 	}
 	addErrors() {
-		this.setState({errormsg: 'Please add the Account name.  The name must be longer than 1 character'});
+		this.setState({errormsg: 'Please add the Quiz name.  The name must be longer than 1 character'});
 	}
 	handleFormSubmit(event) {
         event.preventDefault();
@@ -104,14 +112,32 @@ class NewQuiz extends React.Component {
 			return (
 				<form class="form-horizontal" action="" onSubmit={this.handleFormSubmit}>
                     <div class="form-group">
-                        <label for="message" class="col-sm-2 control-label">Account Name</label>
+                        <label for="message" class="col-sm-2 control-label">Quiz Name</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="name" placeholder="account name" onChange={this.handleFormChange} value={this.state.name} />
+                            <input type="text" class="form-control" id="name" placeholder="quiz name" onChange={this.handleFormChange} value={this.state.name} />
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <label for="message" class="col-sm-2 control-label">Quiz Description</label>
+                        <div class="col-sm-10">
+                            <textarea rows="4" type="text" class="form-control" id="description" placeholder="quiz description" onChange={this.handleFormChange} value={this.state.description} ></textarea>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <label for="message" class="col-sm-2 control-label">Quiz Picture</label>
+                        <div class="col-sm-10">
+                            <input type="file" name="quizPic" id="quizPic"  />
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <label for="message" class="col-sm-2 control-label">Quiz Admin Password to Edit</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="quiz_pwd" placeholder="quiz admin password" onChange={this.handleFormChange} value={this.state.quiz_pwd} />
                         </div>
                     </div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
-							<button type="submit" class="btn btn-cSend">Send</button>
+							<button type="submit" class="btn btn-cSend">Save &amp; Next</button>
 						</div>
 					</div>
 				</form>
@@ -126,7 +152,7 @@ class NewQuiz extends React.Component {
 			<div>
 				<div class="row">
 	                <div class="text-center">
-	                    <h1>Add a new Account</h1>
+	                    <h1>Add a new Quiz</h1>
 	                </div>
 		    	</div>
                 { this.msgMarkup() }

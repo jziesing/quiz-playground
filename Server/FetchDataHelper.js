@@ -41,7 +41,6 @@ class FetchDataHelper {
         console.log(name);
         return new Promise((resolve, reject) => {
 
-            resolve();
             let currclient = new Client({
                 connectionString: process.env.DATABASE_URL,
                 ssl: true,

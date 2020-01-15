@@ -49,7 +49,8 @@ class QuizPlayground extends React.Component {
             if(typeof(this.state.searchQuizs[i + 1]) == 'undefined') {
                 retArr.push((<div key={i} class="row"><Link to={urlReadyStr1}><div key={i} class="col-xs-6 quiz-col">{this.state.searchQuizs[i].name}</div></Link></div>));
             } else {
-                var urlReadyStr2 = '/view/' + this.state.searchQuizs[i + 1].name.replace(/\s+/g, '-').toLowerCase();
+                // var urlReadyStr2 = '/view/' + this.state.searchQuizs[i + 1].name.replace(/\s+/g, '-').toLowerCase();
+                var urlReadyStr2 = '/view/' + encodeURI(this.state.searchQuizs[i + 1].name);
                 retArr.push((<div key={i} class="row"><Link to={urlReadyStr1}><div key={i} class="col-xs-6 quiz-col">{this.state.searchQuizs[i].name}</div></Link><Link to={urlReadyStr2}><div key={i + 1} class="col-xs-6 quiz-col">{this.state.searchQuizs[i + 1].name}</div></Link></div>));
             }
 
