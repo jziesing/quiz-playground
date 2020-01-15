@@ -14,6 +14,7 @@ class FetchData {
 		// methods
         this.FetchQuizs = this.FetchQuizs.bind(this);
         this.FetchQuiz = this.FetchQuiz.bind(this);
+        this.FetchQuizEdit = this.FetchQuizEdit.bind(this);
     }
     /*  @route: /fetch/quizs/
      *     - GET
@@ -31,7 +32,7 @@ class FetchData {
                             return res.sendStatus(400);
                       });
     }
-    /*  @route: /fetch/quizs/:name
+    /*  @route: /fetch/quiz/:name
      *     - GET
      */
     FetchQuiz(req, res) {
@@ -41,6 +42,24 @@ class FetchData {
         console.log('params');
         console.log(req.params.name);
         return this.ahelper.fetchQuiz(req.params.name)
+                      .then(result => {
+                            console.log(result);
+                            return res.status(200).json(result);
+                      }).catch(err => {
+                            console.log(err);
+                            return res.sendStatus(400);
+                      });
+    }
+    /*  @route: /fetch/quiz-edit/:name/:pwd
+     *     - GET
+     */
+    FetchQuizEdit(req, res) {
+        console.log('FetchQuizEditGet');
+        res.setHeader('Content-Type', 'application/json');
+
+        console.log('params');
+        console.log(req.params.name);
+        return this.ahelper.fetchQuizEdit(req.params.name, req.params.pwd)
                       .then(result => {
                             console.log(result);
                             return res.status(200).json(result);

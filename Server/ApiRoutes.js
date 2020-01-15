@@ -23,6 +23,8 @@ let express = require('express'),
 ApiRoutes.get("/fetch/quizs/", DataFetcher.FetchQuizs);
 // get quiz
 ApiRoutes.get("/fetch/quiz/:name", DataFetcher.FetchQuiz);
+// get quiz to edit
+ApiRoutes.get("/fetch/quiz-edit/:name/:pwd", DataFetcher.FetchQuizEdit);
 // add quiz
 ApiRoutes.post("/new/quiz/basic", DataAdder.AddQuizBasicInfo);
 

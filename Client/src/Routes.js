@@ -10,6 +10,7 @@ let React = require('react'),
     Layout = require("./pages/Layout/Layout.js"),
     QuizPlayground = require("./pages/QuizPlayground/QuizPlayground.js"),
     NewQuiz = require("./pages/NewQuiz/NewQuiz.js"),
+    EditQuiz = require("./pages/EditQuiz/EditQuiz.js"),
     ViewQuiz = require("./pages/ViewQuiz/ViewQuiz.js");
 
 
@@ -19,6 +20,7 @@ module.exports = (
         <Route path="/" component={Layout}>
             <IndexRoute component={QuizPlayground} />
             <Route path="new" component={NewQuiz} />
+            <Route path="edit/:name/:pwd" component={EditQuiz} />
             <Route path="view/:name" component={ViewQuiz} />
         </Route>
     </Router>

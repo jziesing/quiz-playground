@@ -1,10 +1,9 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
 
 let ajax = require('superagent');
 
 
-class NewQuiz extends React.Component {
+class EditQuiz extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -21,87 +20,96 @@ class NewQuiz extends React.Component {
 	}
 
 	componentWillMount() {
-		this.setState({isLoading: false});
+        let fetchQuizEditURL = '/fetch/quiz-edit/' + this.props.params.name + '/' + this.props.params.pwd;
+        ajax.get(encodeURI(fetchQuizEditURL))
+        	.end((error, response) => {
+          		if (!error && response) {
+                    console.log(response);
+                    // console.log(JSON.parse(response.text));
+	              	// this.setState({
+	                // 	quizs: JSON.parse(response.text),
+                    //     searchQuizs: JSON.parse(response.text)
+	            	// });
+          		} else {
+              		console.log(`Error fetching data`, error);
+          		}
+        	});
 	}
 
 	handleFormChange(event) {
-		console.log(this.state);
-        switch(event.target.id) {
-            case 'name':
-                this.setState({name: event.target.value});
-                break;
-			case 'description':
-                this.setState({description: event.target.value});
-                break;
-			case 'quiz_pwd':
-                this.setState({quiz_pwd: event.target.value});
-                break;
-        }
+		// console.log(this.state);
+        // switch(event.target.id) {
+        //     case 'name':
+        //         this.setState({name: event.target.value});
+        //         break;
+		// 	case 'description':
+        //         this.setState({description: event.target.value});
+        //         break;
+		// 	case 'quiz_pwd':
+        //         this.setState({quiz_pwd: event.target.value});
+        //         break;
+        // }
 	}
 	validateForm() {
-		let retBool = true;
-		let currErrMsgs = [];
-
-		if(this.state.name.length < 4) {
-			currErrMsgs.push('Quiz Name is too short');
-			retBool = false;
-		}
-		if(this.state.description.length < 6) {
-			currErrMsgs.push('Quiz Description is too short');
-			retBool = false;
-		}
-		if(this.state.quiz_pwd.length < 6) {
-			currErrMsgs.push('Quiz Password is too short');
-			retBool = false;
-		}
-		this.setState({errormsgs: currErrMsgs});
-
-		return retBool;
+		// let retBool = true;
+		// let currErrMsgs = [];
+        //
+		// if(this.state.name.length < 4) {
+		// 	currErrMsgs.push('Quiz Name is too short');
+		// 	retBool = false;
+		// }
+		// if(this.state.description.length < 6) {
+		// 	currErrMsgs.push('Quiz Description is too short');
+		// 	retBool = false;
+		// }
+		// if(this.state.quiz_pwd.length < 6) {
+		// 	currErrMsgs.push('Quiz Password is too short');
+		// 	retBool = false;
+		// }
+		// this.setState({errormsgs: currErrMsgs});
+        //
+		// return retBool;
 	}
 	handleFormSubmit(event) {
-        event.preventDefault();
-		this.setState({isLoading: true});
-		if(this.validateForm()) {
-			let newQuizBasicURL = '/new/quiz/basic';
-			ajax.post(newQuizBasicURL)
-				.set({ 'Content-Type': 'application/json' })
-				.send({
-					name: this.state.name,
-					description__c: this.state.description,
-					edit_password__c: this.state.quiz_pwd
-				}).end((error, response) => {
-                    if(!error && response.status == 200) {
-                        console.log('success');
-                        console.log(JSON.parse(response.text));
-						let rettData = JSON.parse(response.text);
-						
-						let redirUrl = '/edit/' + rettData[0].name + '/' + rettData[0].edit_password__c;
-						this.setState({
-                            isLoading: false,
-                            name: '',
-							description: '',
-							quiz_pwd: '',
-							successmsg: 'Success! Now add your questions.',
-				            errormsgs: []
-						});
-						browserHistory.push(encodeURI(redirUrl));
-                    } else {
-                        console.log('fail');
-                        console.log(error);
-                        this.setState({
-                            isLoading: false,
-                            name: '',
-							description: '',
-							quiz_pwd: '',
-							successmsg: '',
-                            errormsg: ['something went wrong, please try again.']
-						})
-                    }
-                });
-		} else {
-			// this.addErrors();
-			this.setState({isLoading: false});
-		}
+        // event.preventDefault();
+		// this.setState({isLoading: true});
+		// if(this.validateForm()) {
+		// 	let newQuizBasicURL = '/new/quiz/basic';
+		// 	ajax.post(newQuizBasicURL)
+		// 		.set({ 'Content-Type': 'application/json' })
+		// 		.send({
+		// 			name: this.state.name,
+		// 			description__c: this.state.description,
+		// 			edit_password__c: this.state.quiz_pwd
+		// 		}).end((error, response) => {
+        //             if(!error && response.status == 200) {
+        //                 console.log('success');
+        //                 console.log(response);
+		// 				this.setState({
+        //                     isLoading: false,
+        //                     name: '',
+		// 					description: '',
+		// 					quiz_pwd: '',
+		// 					successmsg: 'Success! Now add your questions.',
+		// 		            errormsgs: []
+		// 				});
+        //             } else {
+        //                 console.log('fail');
+        //                 console.log(error);
+        //                 this.setState({
+        //                     isLoading: false,
+        //                     name: '',
+		// 					description: '',
+		// 					quiz_pwd: '',
+		// 					successmsg: '',
+        //                     errormsg: ['something went wrong, please try again.']
+		// 				})
+        //             }
+        //         });
+		// } else {
+		// 	// this.addErrors();
+		// 	this.setState({isLoading: false});
+		// }
 	}
     msgMarkup() {
         if(this.state.errormsgs.length > 0) {
@@ -178,18 +186,12 @@ class NewQuiz extends React.Component {
 			<div>
 				<div class="row">
 	                <div class="text-center">
-	                    <h1>Add a new Quiz</h1>
+	                    <h1>Edit Quiz</h1>
 	                </div>
 		    	</div>
-				<div class="row">
-	                <div class="text-center">
-	                    { this.msgMarkup() }
-	                </div>
-		    	</div>
-				{ this.markup() }
 			</div>
 		);
 	}
 }
 
-export default NewQuiz;
+export default EditQuiz;

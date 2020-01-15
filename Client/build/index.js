@@ -22294,7 +22294,8 @@
 	    Layout = __webpack_require__(246),
 	    QuizPlayground = __webpack_require__(248),
 	    NewQuiz = __webpack_require__(256),
-	    ViewQuiz = __webpack_require__(257);
+	    EditQuiz = __webpack_require__(257),
+	    ViewQuiz = __webpack_require__(258);
 
 	module.exports = React.createElement(
 	    Router,
@@ -22304,6 +22305,7 @@
 	        { path: '/', component: Layout },
 	        React.createElement(IndexRoute, { component: QuizPlayground }),
 	        React.createElement(Route, { path: 'new', component: NewQuiz }),
+	        React.createElement(Route, { path: 'edit/:name/:pwd', component: EditQuiz }),
 	        React.createElement(Route, { path: 'view/:name', component: ViewQuiz })
 	    )
 	);
@@ -27584,6 +27586,9 @@
 				if (currLocc.includes('/view')) {
 					currLocc = '/view';
 				}
+				if (currLocc.includes('/edit')) {
+					currLocc = '/edit';
+				}
 
 				switch (currLocc) {
 					case '':
@@ -27637,6 +27642,30 @@
 						);
 						break;
 					case '/view':
+						return _react2.default.createElement(
+							'ul',
+							{ className: 'nav navbar-nav navbar-right' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									_reactRouter.Link,
+									{ to: '/' },
+									'Quiz\'s'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									_reactRouter.Link,
+									{ to: '/new' },
+									'New Quiz'
+								)
+							)
+						);
+						break;
+					case '/edit':
 						return _react2.default.createElement(
 							'ul',
 							{ className: 'nav navbar-nav navbar-right' },
@@ -27894,7 +27923,6 @@
 	                        )
 	                    ));
 	                } else {
-	                    // var urlReadyStr2 = '/view/' + this.state.searchQuizs[i + 1].name.replace(/\s+/g, '-').toLowerCase();
 	                    var urlReadyStr2 = '/view/' + encodeURI(this.state.searchQuizs[i + 1].name);
 	                    retArr.push(_react2.default.createElement(
 	                        'div',
@@ -30075,6 +30103,8 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactRouter = __webpack_require__(188);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -30165,21 +30195,29 @@
 					}).end(function (error, response) {
 						if (!error && response.status == 200) {
 							console.log('success');
-							console.log(response);
+							console.log(JSON.parse(response.text));
+							var rettData = JSON.parse(response.text);
+
+							var redirUrl = '/edit/' + rettData[0].name + '/' + rettData[0].edit_password__c;
 							_this2.setState({
 								isLoading: false,
 								name: '',
+								description: '',
+								quiz_pwd: '',
 								successmsg: 'Success! Now add your questions.',
-								errormsg: ''
+								errormsgs: []
 							});
+							_reactRouter.browserHistory.push(encodeURI(redirUrl));
 						} else {
 							console.log('fail');
 							console.log(error);
 							_this2.setState({
 								isLoading: false,
 								name: '',
+								description: '',
+								quiz_pwd: '',
 								successmsg: '',
-								errormsg: 'something went wrong, please try again.'
+								errormsg: ['something went wrong, please try again.']
 							});
 						}
 					});
@@ -30351,6 +30389,302 @@
 
 /***/ }),
 /* 257 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(187);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ajax = __webpack_require__(249);
+
+	var EditQuiz = function (_React$Component) {
+		_inherits(EditQuiz, _React$Component);
+
+		function EditQuiz(props) {
+			_classCallCheck(this, EditQuiz);
+
+			var _this = _possibleConstructorReturn(this, (EditQuiz.__proto__ || Object.getPrototypeOf(EditQuiz)).call(this, props));
+
+			_this.state = {
+				isLoading: true,
+				name: '',
+				description: '',
+				quiz_pwd: '',
+				errormsgs: [],
+				successmsg: ''
+			};
+			_this.handleFormChange = _this.handleFormChange.bind(_this);
+			_this.handleFormSubmit = _this.handleFormSubmit.bind(_this);
+			return _this;
+		}
+
+		_createClass(EditQuiz, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				var fetchQuizEditURL = '/fetch/quiz-edit/' + this.props.params.name + '/' + this.props.params.pwd;
+				ajax.get(encodeURI(fetchQuizEditURL)).end(function (error, response) {
+					if (!error && response) {
+						console.log(response);
+						// console.log(JSON.parse(response.text));
+						// this.setState({
+						// 	quizs: JSON.parse(response.text),
+						//     searchQuizs: JSON.parse(response.text)
+						// });
+					} else {
+						console.log('Error fetching data', error);
+					}
+				});
+			}
+		}, {
+			key: 'handleFormChange',
+			value: function handleFormChange(event) {
+				// console.log(this.state);
+				// switch(event.target.id) {
+				//     case 'name':
+				//         this.setState({name: event.target.value});
+				//         break;
+				// 	case 'description':
+				//         this.setState({description: event.target.value});
+				//         break;
+				// 	case 'quiz_pwd':
+				//         this.setState({quiz_pwd: event.target.value});
+				//         break;
+				// }
+			}
+		}, {
+			key: 'validateForm',
+			value: function validateForm() {
+				// let retBool = true;
+				// let currErrMsgs = [];
+				//
+				// if(this.state.name.length < 4) {
+				// 	currErrMsgs.push('Quiz Name is too short');
+				// 	retBool = false;
+				// }
+				// if(this.state.description.length < 6) {
+				// 	currErrMsgs.push('Quiz Description is too short');
+				// 	retBool = false;
+				// }
+				// if(this.state.quiz_pwd.length < 6) {
+				// 	currErrMsgs.push('Quiz Password is too short');
+				// 	retBool = false;
+				// }
+				// this.setState({errormsgs: currErrMsgs});
+				//
+				// return retBool;
+			}
+		}, {
+			key: 'handleFormSubmit',
+			value: function handleFormSubmit(event) {
+				// event.preventDefault();
+				// this.setState({isLoading: true});
+				// if(this.validateForm()) {
+				// 	let newQuizBasicURL = '/new/quiz/basic';
+				// 	ajax.post(newQuizBasicURL)
+				// 		.set({ 'Content-Type': 'application/json' })
+				// 		.send({
+				// 			name: this.state.name,
+				// 			description__c: this.state.description,
+				// 			edit_password__c: this.state.quiz_pwd
+				// 		}).end((error, response) => {
+				//             if(!error && response.status == 200) {
+				//                 console.log('success');
+				//                 console.log(response);
+				// 				this.setState({
+				//                     isLoading: false,
+				//                     name: '',
+				// 					description: '',
+				// 					quiz_pwd: '',
+				// 					successmsg: 'Success! Now add your questions.',
+				// 		            errormsgs: []
+				// 				});
+				//             } else {
+				//                 console.log('fail');
+				//                 console.log(error);
+				//                 this.setState({
+				//                     isLoading: false,
+				//                     name: '',
+				// 					description: '',
+				// 					quiz_pwd: '',
+				// 					successmsg: '',
+				//                     errormsg: ['something went wrong, please try again.']
+				// 				})
+				//             }
+				//         });
+				// } else {
+				// 	// this.addErrors();
+				// 	this.setState({isLoading: false});
+				// }
+			}
+		}, {
+			key: 'msgMarkup',
+			value: function msgMarkup() {
+				if (this.state.errormsgs.length > 0) {
+					return this.state.errormsgs.map(function (dat, index) {
+						return _react2.default.createElement(
+							'div',
+							{ key: index, className: 'alert alert-danger', role: 'alert' },
+							dat
+						);
+					});
+				} else if (this.state.successmsg != '') {
+					return _react2.default.createElement(
+						'div',
+						{ className: 'alert alert-success', role: 'alert' },
+						this.state.successmsg
+					);
+				}
+			}
+		}, {
+			key: 'markup',
+			value: function markup() {
+				if (this.state.isLoading) {
+					return _react2.default.createElement(
+						'form',
+						{ className: 'form-horizontal', action: '' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'col-sm-offset-4 col-sm-4' },
+							_react2.default.createElement('i', { className: 'fa fa-spinner fa-spin loadingCon' })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-offset-2 col-sm-10' },
+								_react2.default.createElement(
+									'button',
+									{ type: 'submit', className: 'btn btn-cSend disabled' },
+									'Save & Next'
+								)
+							)
+						)
+					);
+				} else {
+					return _react2.default.createElement(
+						'form',
+						{ className: 'form-horizontal', action: '', onSubmit: this.handleFormSubmit },
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
+								'Quiz Name'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-10' },
+								_react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name', placeholder: 'quiz name', onChange: this.handleFormChange, value: this.state.name })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
+								'Quiz Description'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-10' },
+								_react2.default.createElement('textarea', { rows: '4', type: 'text', className: 'form-control', id: 'description', placeholder: 'quiz description', onChange: this.handleFormChange, value: this.state.description })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
+								'Quiz Picture'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-10' },
+								_react2.default.createElement('input', { type: 'file', name: 'quizPic', id: 'quizPic' })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'label',
+								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
+								'Quiz Admin Password to Edit'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-10' },
+								_react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'quiz_pwd', placeholder: 'quiz admin password', onChange: this.handleFormChange, value: this.state.quiz_pwd })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'form-group' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-sm-offset-2 col-sm-10' },
+								_react2.default.createElement(
+									'button',
+									{ type: 'submit', className: 'btn btn-cSend' },
+									'Save & Next'
+								)
+							)
+						)
+					);
+				}
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+
+				return _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement(
+						'div',
+						{ className: 'row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'text-center' },
+							_react2.default.createElement(
+								'h1',
+								null,
+								'Edit Quiz'
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return EditQuiz;
+	}(_react2.default.Component);
+
+	exports.default = EditQuiz;
+	module.exports = exports['default'];
+
+/***/ }),
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
