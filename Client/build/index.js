@@ -30309,20 +30309,6 @@
 							_react2.default.createElement(
 								'label',
 								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
-								'Quiz Picture'
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-sm-10' },
-								_react2.default.createElement('input', { type: 'file', name: 'quizPic', id: 'quizPic' })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'label',
-								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
 								'Quiz Admin Password to Edit'
 							),
 							_react2.default.createElement(
@@ -30394,7 +30380,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -30414,270 +30400,447 @@
 	var ajax = __webpack_require__(249);
 
 	var EditQuiz = function (_React$Component) {
-		_inherits(EditQuiz, _React$Component);
+	    _inherits(EditQuiz, _React$Component);
 
-		function EditQuiz(props) {
-			_classCallCheck(this, EditQuiz);
+	    function EditQuiz(props) {
+	        _classCallCheck(this, EditQuiz);
 
-			var _this = _possibleConstructorReturn(this, (EditQuiz.__proto__ || Object.getPrototypeOf(EditQuiz)).call(this, props));
+	        var _this = _possibleConstructorReturn(this, (EditQuiz.__proto__ || Object.getPrototypeOf(EditQuiz)).call(this, props));
 
-			_this.state = {
-				isLoading: true,
-				name: '',
-				description: '',
-				quiz_pwd: '',
-				errormsgs: [],
-				successmsg: ''
-			};
-			_this.handleFormChange = _this.handleFormChange.bind(_this);
-			_this.handleFormSubmit = _this.handleFormSubmit.bind(_this);
-			return _this;
-		}
+	        _this.state = {
+	            isLoading: true,
+	            name: '',
+	            description__c: '',
+	            edit_password__c: '',
+	            sfid: '',
+	            questions: [],
+	            errormsgs: [],
+	            successmsg: ''
+	        };
+	        _this.handleFormBasicChange = _this.handleFormBasicChange.bind(_this);
+	        _this.handleAddQuestionsFormSubmit = _this.handleAddQuestionsFormSubmit.bind(_this);
+	        _this.handleBasicFormSubmit = _this.handleBasicFormSubmit.bind(_this);
+	        return _this;
+	    }
 
-		_createClass(EditQuiz, [{
-			key: 'componentWillMount',
-			value: function componentWillMount() {
-				var fetchQuizEditURL = '/fetch/quiz-edit/' + this.props.params.name + '/' + this.props.params.pwd;
-				ajax.get(encodeURI(fetchQuizEditURL)).end(function (error, response) {
-					if (!error && response) {
-						console.log(response);
-						// console.log(JSON.parse(response.text));
-						// this.setState({
-						// 	quizs: JSON.parse(response.text),
-						//     searchQuizs: JSON.parse(response.text)
-						// });
-					} else {
-						console.log('Error fetching data', error);
-					}
-				});
-			}
-		}, {
-			key: 'handleFormChange',
-			value: function handleFormChange(event) {
-				// console.log(this.state);
-				// switch(event.target.id) {
-				//     case 'name':
-				//         this.setState({name: event.target.value});
-				//         break;
-				// 	case 'description':
-				//         this.setState({description: event.target.value});
-				//         break;
-				// 	case 'quiz_pwd':
-				//         this.setState({quiz_pwd: event.target.value});
-				//         break;
-				// }
-			}
-		}, {
-			key: 'validateForm',
-			value: function validateForm() {
-				// let retBool = true;
-				// let currErrMsgs = [];
-				//
-				// if(this.state.name.length < 4) {
-				// 	currErrMsgs.push('Quiz Name is too short');
-				// 	retBool = false;
-				// }
-				// if(this.state.description.length < 6) {
-				// 	currErrMsgs.push('Quiz Description is too short');
-				// 	retBool = false;
-				// }
-				// if(this.state.quiz_pwd.length < 6) {
-				// 	currErrMsgs.push('Quiz Password is too short');
-				// 	retBool = false;
-				// }
-				// this.setState({errormsgs: currErrMsgs});
-				//
-				// return retBool;
-			}
-		}, {
-			key: 'handleFormSubmit',
-			value: function handleFormSubmit(event) {
-				// event.preventDefault();
-				// this.setState({isLoading: true});
-				// if(this.validateForm()) {
-				// 	let newQuizBasicURL = '/new/quiz/basic';
-				// 	ajax.post(newQuizBasicURL)
-				// 		.set({ 'Content-Type': 'application/json' })
-				// 		.send({
-				// 			name: this.state.name,
-				// 			description__c: this.state.description,
-				// 			edit_password__c: this.state.quiz_pwd
-				// 		}).end((error, response) => {
-				//             if(!error && response.status == 200) {
-				//                 console.log('success');
-				//                 console.log(response);
-				// 				this.setState({
-				//                     isLoading: false,
-				//                     name: '',
-				// 					description: '',
-				// 					quiz_pwd: '',
-				// 					successmsg: 'Success! Now add your questions.',
-				// 		            errormsgs: []
-				// 				});
-				//             } else {
-				//                 console.log('fail');
-				//                 console.log(error);
-				//                 this.setState({
-				//                     isLoading: false,
-				//                     name: '',
-				// 					description: '',
-				// 					quiz_pwd: '',
-				// 					successmsg: '',
-				//                     errormsg: ['something went wrong, please try again.']
-				// 				})
-				//             }
-				//         });
-				// } else {
-				// 	// this.addErrors();
-				// 	this.setState({isLoading: false});
-				// }
-			}
-		}, {
-			key: 'msgMarkup',
-			value: function msgMarkup() {
-				if (this.state.errormsgs.length > 0) {
-					return this.state.errormsgs.map(function (dat, index) {
-						return _react2.default.createElement(
-							'div',
-							{ key: index, className: 'alert alert-danger', role: 'alert' },
-							dat
-						);
-					});
-				} else if (this.state.successmsg != '') {
-					return _react2.default.createElement(
-						'div',
-						{ className: 'alert alert-success', role: 'alert' },
-						this.state.successmsg
-					);
-				}
-			}
-		}, {
-			key: 'markup',
-			value: function markup() {
-				if (this.state.isLoading) {
-					return _react2.default.createElement(
-						'form',
-						{ className: 'form-horizontal', action: '' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'col-sm-offset-4 col-sm-4' },
-							_react2.default.createElement('i', { className: 'fa fa-spinner fa-spin loadingCon' })
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-sm-offset-2 col-sm-10' },
-								_react2.default.createElement(
-									'button',
-									{ type: 'submit', className: 'btn btn-cSend disabled' },
-									'Save & Next'
-								)
-							)
-						)
-					);
-				} else {
-					return _react2.default.createElement(
-						'form',
-						{ className: 'form-horizontal', action: '', onSubmit: this.handleFormSubmit },
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'label',
-								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
-								'Quiz Name'
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-sm-10' },
-								_react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name', placeholder: 'quiz name', onChange: this.handleFormChange, value: this.state.name })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'label',
-								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
-								'Quiz Description'
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-sm-10' },
-								_react2.default.createElement('textarea', { rows: '4', type: 'text', className: 'form-control', id: 'description', placeholder: 'quiz description', onChange: this.handleFormChange, value: this.state.description })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'label',
-								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
-								'Quiz Picture'
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-sm-10' },
-								_react2.default.createElement('input', { type: 'file', name: 'quizPic', id: 'quizPic' })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'label',
-								{ htmlFor: 'message', className: 'col-sm-2 control-label' },
-								'Quiz Admin Password to Edit'
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-sm-10' },
-								_react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'quiz_pwd', placeholder: 'quiz admin password', onChange: this.handleFormChange, value: this.state.quiz_pwd })
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'form-group' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'col-sm-offset-2 col-sm-10' },
-								_react2.default.createElement(
-									'button',
-									{ type: 'submit', className: 'btn btn-cSend' },
-									'Save & Next'
-								)
-							)
-						)
-					);
-				}
-			}
-		}, {
-			key: 'render',
-			value: function render() {
+	    _createClass(EditQuiz, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            var _this2 = this;
 
-				return _react2.default.createElement(
-					'div',
-					null,
-					_react2.default.createElement(
-						'div',
-						{ className: 'row' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'text-center' },
-							_react2.default.createElement(
-								'h1',
-								null,
-								'Edit Quiz'
-							)
-						)
-					)
-				);
-			}
-		}]);
+	            var fetchQuizEditURL = '/fetch/quiz-edit/' + this.props.params.name + '/' + this.props.params.pwd;
+	            ajax.get(encodeURI(fetchQuizEditURL)).end(function (error, response) {
+	                if (!error && response) {
+	                    console.log(response);
+	                    console.log(JSON.parse(response.text));
+	                    var retData = JSON.parse(response.text);
+	                    _this2.setState({
+	                        isLoading: false,
+	                        name: retData.info[0].name,
+	                        description__c: retData.info[0].description__c,
+	                        edit_password__c: retData.info[0].edit_password__c,
+	                        sfid: retData.info[0].sfid,
+	                        questions: retData.questions
+	                    });
+	                } else {
+	                    console.log('Error fetching data', error);
+	                    _this2.setState({ isLoading: false });
+	                }
+	            });
+	        }
+	    }, {
+	        key: 'handleFormBasicChange',
+	        value: function handleFormBasicChange(event) {
+	            console.log(this.state);
+	            switch (event.target.id) {
+	                case 'name':
+	                    this.setState({ name: event.target.value });
+	                    break;
+	                case 'description__c':
+	                    this.setState({ description__c: event.target.value });
+	                    break;
+	                case 'edit_password__c':
+	                    this.setState({ edit_password__c: event.target.value });
+	                    break;
+	            }
+	        }
+	    }, {
+	        key: 'validateForm',
+	        value: function validateForm() {
+	            var retBool = true;
+	            var currErrMsgs = [];
 
-		return EditQuiz;
+	            if (this.state.name.length < 4) {
+	                currErrMsgs.push('Quiz Name is too short');
+	                retBool = false;
+	            }
+	            if (this.state.description.length < 6) {
+	                currErrMsgs.push('Quiz Description is too short');
+	                retBool = false;
+	            }
+	            if (this.state.quiz_pwd.length < 6) {
+	                currErrMsgs.push('Quiz Password is too short');
+	                retBool = false;
+	            }
+	            this.setState({ errormsgs: currErrMsgs });
+
+	            return retBool;
+	        }
+	    }, {
+	        key: 'handleBasicFormSubmit',
+	        value: function handleBasicFormSubmit(event) {
+	            var _this3 = this;
+
+	            event.preventDefault();
+	            this.setState({ isLoading: true });
+	            if (this.validateForm()) {
+	                var newQuizBasicURL = '/new/quiz/basic';
+	                ajax.post(newQuizBasicURL).set({ 'Content-Type': 'application/json' }).send({
+	                    name: this.state.name,
+	                    description__c: this.state.description,
+	                    edit_password__c: this.state.quiz_pwd
+	                }).end(function (error, response) {
+	                    if (!error && response.status == 200) {
+	                        console.log('success');
+	                        console.log(JSON.parse(response.text));
+	                        var rettData = JSON.parse(response.text);
+
+	                        var redirUrl = '/edit/' + rettData[0].name + '/' + rettData[0].edit_password__c;
+	                        _this3.setState({
+	                            isLoading: false,
+	                            name: '',
+	                            description: '',
+	                            quiz_pwd: '',
+	                            successmsg: 'Success! Now add your questions.',
+	                            errormsgs: []
+	                        });
+	                        browserHistory.push(encodeURI(redirUrl));
+	                    } else {
+	                        console.log('fail');
+	                        console.log(error);
+	                        _this3.setState({
+	                            isLoading: false,
+	                            name: '',
+	                            description: '',
+	                            quiz_pwd: '',
+	                            successmsg: '',
+	                            errormsg: ['something went wrong, please try again.']
+	                        });
+	                    }
+	                });
+	            } else {
+	                // this.addErrors();
+	                this.setState({ isLoading: false });
+	            }
+	        }
+	    }, {
+	        key: 'handleAddQuestionsFormSubmit',
+	        value: function handleAddQuestionsFormSubmit(event) {
+	            var _this4 = this;
+
+	            event.preventDefault();
+	            this.setState({ isLoading: true });
+	            setTimeout(function () {
+	                return _this4.setState({ isLoading: false });
+	            }, 3000, 1);
+	        }
+	    }, {
+	        key: 'msgMarkup',
+	        value: function msgMarkup() {
+	            if (this.state.errormsgs.length > 0) {
+	                return this.state.errormsgs.map(function (dat, index) {
+	                    return _react2.default.createElement(
+	                        'div',
+	                        { key: index, className: 'alert alert-danger', role: 'alert' },
+	                        dat
+	                    );
+	                });
+	            } else if (this.state.successmsg != '') {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'alert alert-success', role: 'alert' },
+	                    this.state.successmsg
+	                );
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+
+	            if (this.state.isLoading) {
+	                return _react2.default.createElement(
+	                    'form',
+	                    { className: 'form-horizontal', action: '' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'col-sm-offset-4 col-sm-4' },
+	                        _react2.default.createElement('i', { className: 'fa fa-spinner fa-spin loadingCon' })
+	                    )
+	                );
+	            } else {
+	                return _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'text-center' },
+	                            _react2.default.createElement(
+	                                'h1',
+	                                null,
+	                                'Edit Quiz'
+	                            )
+	                        )
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'container-fluid' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'row' },
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-xs-12' },
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'row editRow' },
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'col-xs-6' },
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'text-left' },
+	                                            _react2.default.createElement(
+	                                                'h2',
+	                                                null,
+	                                                'Add Questions'
+	                                            )
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'text-left' },
+	                                            _react2.default.createElement(
+	                                                'p',
+	                                                null,
+	                                                'format:'
+	                                            ),
+	                                            _react2.default.createElement(
+	                                                'ul',
+	                                                null,
+	                                                _react2.default.createElement(
+	                                                    'li',
+	                                                    null,
+	                                                    'file format = JSON'
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    'li',
+	                                                    null,
+	                                                    'object properties'
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    'ul',
+	                                                    null,
+	                                                    _react2.default.createElement(
+	                                                        'li',
+	                                                        null,
+	                                                        'questions = array of objects'
+	                                                    ),
+	                                                    _react2.default.createElement(
+	                                                        'li',
+	                                                        null,
+	                                                        'question = string'
+	                                                    ),
+	                                                    _react2.default.createElement(
+	                                                        'li',
+	                                                        null,
+	                                                        'correct_answer = array of ints (index of answers array)'
+	                                                    ),
+	                                                    _react2.default.createElement(
+	                                                        'li',
+	                                                        null,
+	                                                        'answer = array of strings (possible answers up to 6)'
+	                                                    )
+	                                                )
+	                                            ),
+	                                            _react2.default.createElement(
+	                                                'pre',
+	                                                null,
+	                                                '{\n    questions: [{\n        question: \'What color is the sky?\',\n        correct_answer: [ 1 ],\n        answers: [\'red\', \'blue\']\n    }]\n}'
+	                                            )
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'col-xs-6' },
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'text-right' },
+	                                            _react2.default.createElement(
+	                                                'form',
+	                                                { className: 'form-horizontal', action: '', onSubmit: this.handleAddQuestionsFormSubmit },
+	                                                _react2.default.createElement(
+	                                                    'div',
+	                                                    { className: 'form-group' },
+	                                                    _react2.default.createElement(
+	                                                        'label',
+	                                                        { htmlFor: 'exampleInputFile' },
+	                                                        'File input'
+	                                                    ),
+	                                                    _react2.default.createElement('input', { type: 'file', id: 'exampleInputFile' }),
+	                                                    _react2.default.createElement(
+	                                                        'p',
+	                                                        { className: 'help-block' },
+	                                                        'Use file format on the left.'
+	                                                    )
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    'button',
+	                                                    { type: 'submit', className: 'btn btn-default' },
+	                                                    'Submit'
+	                                                )
+	                                            )
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-xs-12' },
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'row editRow' },
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'col-xs-6' },
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'text-left' },
+	                                            _react2.default.createElement(
+	                                                'h2',
+	                                                null,
+	                                                'Current Questions'
+	                                            )
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'col-xs-6' },
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'text-left' },
+	                                            _react2.default.createElement(
+	                                                'h2',
+	                                                null,
+	                                                this.state.questions.length,
+	                                                ' questions'
+	                                            )
+	                                        )
+	                                    )
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-xs-12' },
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'row editRow' },
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'col-xs-6' },
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'text-left' },
+	                                            _react2.default.createElement(
+	                                                'h2',
+	                                                null,
+	                                                'Basic Info'
+	                                            )
+	                                        )
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'div',
+	                                        { className: 'col-xs-6' },
+	                                        _react2.default.createElement(
+	                                            'div',
+	                                            { className: 'row' },
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'text-center' },
+	                                                this.msgMarkup()
+	                                            )
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'form',
+	                                            { className: 'form-horizontal', action: '', onSubmit: this.handleBasicFormSubmit },
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'form-group' },
+	                                                _react2.default.createElement(
+	                                                    'label',
+	                                                    { htmlFor: 'message', className: 'col-sm-2 control-label' },
+	                                                    'Quiz Name'
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    'div',
+	                                                    { className: 'col-sm-10' },
+	                                                    _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'name', placeholder: 'quiz name', onChange: this.handleFormBasicChange, value: this.state.name })
+	                                                )
+	                                            ),
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'form-group' },
+	                                                _react2.default.createElement(
+	                                                    'label',
+	                                                    { htmlFor: 'message', className: 'col-sm-2 control-label' },
+	                                                    'Quiz Description'
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    'div',
+	                                                    { className: 'col-sm-10' },
+	                                                    _react2.default.createElement('textarea', { rows: '4', type: 'text', className: 'form-control', id: 'description', placeholder: 'quiz description', onChange: this.handleFormBasicChange, value: this.state.description__c })
+	                                                )
+	                                            ),
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'form-group' },
+	                                                _react2.default.createElement(
+	                                                    'label',
+	                                                    { htmlFor: 'message', className: 'col-sm-2 control-label' },
+	                                                    'Quiz Admin Password to Edit'
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    'div',
+	                                                    { className: 'col-sm-10' },
+	                                                    _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'quiz_pwd', placeholder: 'quiz admin password', onChange: this.handleFormBasicChange, value: this.state.edit_password__c })
+	                                                )
+	                                            ),
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'form-group' },
+	                                                _react2.default.createElement(
+	                                                    'div',
+	                                                    { className: 'col-sm-offset-2 col-sm-10' },
+	                                                    _react2.default.createElement(
+	                                                        'button',
+	                                                        { type: 'submit', className: 'btn btn-cSend' },
+	                                                        'Save'
+	                                                    )
+	                                                )
+	                                            )
+	                                        )
+	                                    )
+	                                )
+	                            )
+	                        )
+	                    )
+	                );
+	            }
+	        }
+	    }]);
+
+	    return EditQuiz;
 	}(_react2.default.Component);
 
 	exports.default = EditQuiz;

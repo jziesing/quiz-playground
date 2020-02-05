@@ -74,7 +74,7 @@ class NewQuiz extends React.Component {
                         console.log('success');
                         console.log(JSON.parse(response.text));
 						let rettData = JSON.parse(response.text);
-						
+
 						let redirUrl = '/edit/' + rettData[0].name + '/' + rettData[0].edit_password__c;
 						this.setState({
                             isLoading: false,
@@ -147,12 +147,6 @@ class NewQuiz extends React.Component {
                         <label for="message" class="col-sm-2 control-label">Quiz Description</label>
                         <div class="col-sm-10">
                             <textarea rows="4" type="text" class="form-control" id="description" placeholder="quiz description" onChange={this.handleFormChange} value={this.state.description} ></textarea>
-                        </div>
-                    </div>
-					<div class="form-group">
-                        <label for="message" class="col-sm-2 control-label">Quiz Picture</label>
-                        <div class="col-sm-10">
-                            <input type="file" name="quizPic" id="quizPic"  />
                         </div>
                     </div>
 					<div class="form-group">
