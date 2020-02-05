@@ -27,6 +27,8 @@ ApiRoutes.get("/fetch/quiz/:name", DataFetcher.FetchQuiz);
 ApiRoutes.get("/fetch/quiz-edit/:name/:pwd", DataFetcher.FetchQuizEdit);
 // add quiz
 ApiRoutes.post("/new/quiz/basic", DataAdder.AddQuizBasicInfo);
+// add questions
+ApiRoutes.post("/new/questions/:name/:pwd", DataAdder.AddQuestions);
 
 /*
  * export

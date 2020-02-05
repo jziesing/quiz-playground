@@ -128,7 +128,19 @@ class EditQuiz extends React.Component {
 	handleAddQuestionsFormSubmit(event) {
         event.preventDefault();
 		this.setState({isLoading: true});
-		setTimeout(() => this.setState({isLoading: false}), 3000, 1 );
+
+		var formData = new FormData();
+        var files = document.getElementById("questionsFile").files;
+
+        formData.append("data", files[0]);
+		let addQsURL = '/new/quiz/basic';
+
+        ajax.post(addQsURL)
+			.send(formData)
+			.end(function(err, response) {
+				console.log(err, response);
+				this.setState({isLoading: false})
+        });
 
 	}
     msgMarkup() {
@@ -202,7 +214,7 @@ class EditQuiz extends React.Component {
 											<form class="form-horizontal" action="" onSubmit={this.handleAddQuestionsFormSubmit}>
 												<div class="form-group">
 													<label for="exampleInputFile">File input</label>
-													<input type="file" id="exampleInputFile" />
+													<input type="file" id="questionsFile" accept=".csv" />
 													<p class="help-block">Use file format on the left.</p>
 												</div>
 												<button type="submit" class="btn btn-default">Submit</button>

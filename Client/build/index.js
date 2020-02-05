@@ -30536,13 +30536,19 @@
 	    }, {
 	        key: 'handleAddQuestionsFormSubmit',
 	        value: function handleAddQuestionsFormSubmit(event) {
-	            var _this4 = this;
-
 	            event.preventDefault();
 	            this.setState({ isLoading: true });
-	            setTimeout(function () {
-	                return _this4.setState({ isLoading: false });
-	            }, 3000, 1);
+
+	            var formData = new FormData();
+	            var files = document.getElementById("questionsFile").files;
+
+	            formData.append("data", files[0]);
+	            var addQsURL = '/new/quiz/basic';
+
+	            ajax.post(addQsURL).send(formData).end(function (err, response) {
+	                console.log(err, response);
+	                this.setState({ isLoading: false });
+	            });
 	        }
 	    }, {
 	        key: 'msgMarkup',
@@ -30688,7 +30694,7 @@
 	                                                        { htmlFor: 'exampleInputFile' },
 	                                                        'File input'
 	                                                    ),
-	                                                    _react2.default.createElement('input', { type: 'file', id: 'exampleInputFile' }),
+	                                                    _react2.default.createElement('input', { type: 'file', id: 'questionsFile', accept: '.csv' }),
 	                                                    _react2.default.createElement(
 	                                                        'p',
 	                                                        { className: 'help-block' },
