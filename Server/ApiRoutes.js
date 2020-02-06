@@ -11,8 +11,6 @@ let express = require('express'),
     DataFetcher = new FetchData(),
     DataAdder = new AddData();
 
-
-
 /*
  *  routes
  */

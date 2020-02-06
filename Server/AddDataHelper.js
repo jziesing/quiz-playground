@@ -3,8 +3,11 @@
  */
 "use strict";
 
-const { Client } = require('pg');
-var AWS = require("aws-sdk");
+
+let { Client } = require('pg'),
+    multer = require('multer'),
+    multerS3 = require('multer-s3'),
+    AWS = require("aws-sdk");
 
 var s3  = new AWS.S3({
   accessKeyId: process.env.HDRIVE_S3_ACCESS_KEY,
@@ -12,6 +15,17 @@ var s3  = new AWS.S3({
   region: 'us-east-1'
 });
 
+var upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'quiz-playground',
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        key: function (req, file, cb) {
+            var filePathAndName = 'quizs/' + req.headers.pg_id + '/questions__' + new Date().toJSON().replace(/-/g,'_').replace(/:/g,'-').replace(/\./g,'--')  + '.json';
+            cb(null, filePathAndName);
+        }
+    })
+}).array('questions', 1);
 
 
 
@@ -20,6 +34,7 @@ class AddDataHelper {
     constructor() {
 		// methods
         this.addQuizBasicInfo = this.addQuizBasicInfo.bind(this);
+        this.addQuestions =  this.addQuestions.bind(this);
     }
 
     addQuizBasicInfo(basic_info) {
@@ -60,6 +75,25 @@ class AddDataHelper {
             });
         });
 
+    }
+
+
+    addQuestions(req, res) {
+
+        return new Promise((resolve, reject) => {
+
+            upload(req, res, function(err) {
+                if(err) {
+                    console.log('upload errrorrr');
+                    console.log(err);
+                    reject(err);
+                } else {
+                    console.log('upload success');
+                    resolve();
+                }
+            });
+
+        });
     }
 
 }

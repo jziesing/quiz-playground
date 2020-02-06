@@ -30413,6 +30413,7 @@
 	            description__c: '',
 	            edit_password__c: '',
 	            sfid: '',
+	            id: '',
 	            questions: [],
 	            errormsgs: [],
 	            successmsg: ''
@@ -30439,6 +30440,7 @@
 	                        name: retData.info[0].name,
 	                        description__c: retData.info[0].description__c,
 	                        edit_password__c: retData.info[0].edit_password__c,
+	                        id: retData.info[0].id,
 	                        sfid: retData.info[0].sfid,
 	                        questions: retData.questions
 	                    });
@@ -30536,18 +30538,27 @@
 	    }, {
 	        key: 'handleAddQuestionsFormSubmit',
 	        value: function handleAddQuestionsFormSubmit(event) {
+	            var _this4 = this;
+
 	            event.preventDefault();
 	            this.setState({ isLoading: true });
 
 	            var formData = new FormData();
 	            var files = document.getElementById("questionsFile").files;
+	            formData.append("questions", files[0]);
 
-	            formData.append("data", files[0]);
-	            var addQsURL = '/new/quiz/basic';
+	            var addQsURL = '/new/questions/' + this.state.name + '/' + this.state.edit_password__c;
 
-	            ajax.post(addQsURL).send(formData).end(function (err, response) {
+	            ajax.post(encodeURI(addQsURL)).set('quiz_name', this.state.name).set('sfid', this.state.sfid).set('edit_password__c', this.state.edit_password__c).set('pg_id', this.state.id).send(formData).end(function (err, response) {
 	                console.log(err, response);
-	                this.setState({ isLoading: false });
+	                if (err) {
+	                    console.log('err');
+	                    console.log(err);
+	                } else {
+	                    console.log('Succeessss');
+	                    console.log(response);
+	                }
+	                _this4.setState({ isLoading: false });
 	            });
 	        }
 	    }, {
@@ -30694,7 +30705,7 @@
 	                                                        { htmlFor: 'exampleInputFile' },
 	                                                        'File input'
 	                                                    ),
-	                                                    _react2.default.createElement('input', { type: 'file', id: 'questionsFile', accept: '.csv' }),
+	                                                    _react2.default.createElement('input', { type: 'file', name: 'questions', id: 'questionsFile', accept: '.json' }),
 	                                                    _react2.default.createElement(
 	                                                        'p',
 	                                                        { className: 'help-block' },

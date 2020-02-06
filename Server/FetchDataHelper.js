@@ -91,7 +91,7 @@ class FetchDataHelper {
                 var basic_info = res.rows;
                 let questionsQueryStr = 'SELECT id, sfid, name, quiz__c, question__c, correct_answer__c, answer_1__c, answer_2__c, answer_3__c, answer_4__c, answer_5__c, answer_6__c FROM salesforce.quiz_question__c WHERE quiz__c=\'' + basic_info[0].sfid + '\';'
                 currclient.query(questionsQueryStr, (errs, ress) => {
-                    if(errs){
+                    if(errs) {
                         console.log(errs);
                         reject();
                     }

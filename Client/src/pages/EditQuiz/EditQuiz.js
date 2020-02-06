@@ -13,6 +13,7 @@ class EditQuiz extends React.Component {
 			description__c: '',
 			edit_password__c: '',
 			sfid: '',
+			id: '',
             questions: [],
             errormsgs: [],
             successmsg: ''
@@ -35,6 +36,7 @@ class EditQuiz extends React.Component {
 	                	name: retData.info[0].name,
                         description__c: retData.info[0].description__c,
                         edit_password__c: retData.info[0].edit_password__c,
+                        id: retData.info[0].id,
                         sfid: retData.info[0].sfid,
                         questions: retData.questions
 	            	});
@@ -131,18 +133,29 @@ class EditQuiz extends React.Component {
 
 		var formData = new FormData();
         var files = document.getElementById("questionsFile").files;
+        formData.append("questions", files[0]);
 
-        formData.append("data", files[0]);
-		let addQsURL = '/new/quiz/basic';
+		let addQsURL = '/new/questions/' + this.state.name + '/' +  this.state.edit_password__c;
 
-        ajax.post(addQsURL)
+        ajax.post(encodeURI(addQsURL))
+			.set('quiz_name', this.state.name)
+			.set('sfid', this.state.sfid)
+			.set('edit_password__c', this.state.edit_password__c)
+			.set('pg_id', this.state.id)
 			.send(formData)
-			.end(function(err, response) {
+			.end((err, response) => {
 				console.log(err, response);
+				if(err) {
+					console.log('err');
+					console.log(err);
+				} else {
+					console.log('Succeessss');
+					console.log(response);
+				}
 				this.setState({isLoading: false})
         });
-
 	}
+
     msgMarkup() {
         if(this.state.errormsgs.length > 0) {
             return this.state.errormsgs.map((dat, index) => {
@@ -214,7 +227,7 @@ class EditQuiz extends React.Component {
 											<form class="form-horizontal" action="" onSubmit={this.handleAddQuestionsFormSubmit}>
 												<div class="form-group">
 													<label for="exampleInputFile">File input</label>
-													<input type="file" id="questionsFile" accept=".csv" />
+													<input type="file" name="questions" id="questionsFile" accept=".json" />
 													<p class="help-block">Use file format on the left.</p>
 												</div>
 												<button type="submit" class="btn btn-default">Submit</button>
