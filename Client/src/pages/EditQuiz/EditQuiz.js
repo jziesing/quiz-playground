@@ -227,7 +227,7 @@ class EditQuiz extends React.Component {
 											<form class="form-horizontal" action="" onSubmit={this.handleAddQuestionsFormSubmit}>
 												<div class="form-group">
 													<label for="exampleInputFile">File input</label>
-													<input type="file" name="questions" id="questionsFile" accept=".json" />
+													<input type="file" name="questions" id="questionsFile" accept=".csv" />
 													<p class="help-block">Use file format on the left.</p>
 												</div>
 												<button type="submit" class="btn btn-default">Submit</button>
