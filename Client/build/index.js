@@ -30705,7 +30705,7 @@
 	                                                        { htmlFor: 'exampleInputFile' },
 	                                                        'File input'
 	                                                    ),
-	                                                    _react2.default.createElement('input', { type: 'file', name: 'questions', id: 'questionsFile', accept: '.json' }),
+	                                                    _react2.default.createElement('input', { type: 'file', name: 'questions', id: 'questionsFile', accept: '.csv' }),
 	                                                    _react2.default.createElement(
 	                                                        'p',
 	                                                        { className: 'help-block' },

@@ -31,6 +31,7 @@ var upload = multer({
         contentType: multerS3.AUTO_CONTENT_TYPE,
         key: function (req, file, cb) {
             var filePathAndName = 'quizs/' + req.headers.pg_id + '/questions__' + new Date().toJSON().replace(/-/g,'_').replace(/:/g,'-').replace(/\./g,'--')  + '.json';
+            req.headers['file_path_s'] = filePathAndName;
             cb(null, filePathAndName);
         }
     })
@@ -98,14 +99,14 @@ class AddDataHelper {
                     reject(err);
                 } else {
                     console.log('upload success');
-                    var filePathAndName = 'quizs/' + req.headers.pg_id + '/questions__' + new Date().toJSON().replace(/-/g,'_').replace(/:/g,'-').replace(/\./g,'--')  + '.json';
-
+                    console.log(req.headers['file_path_s']);
+                    
                     producer.init().then(function() {
                         producer.send({
                             topic: 'licking-49744.add_qs_ms',
                             partition: 0,
                             message: {
-                                value: filePathAndName
+                                value: req.headers['file_path_s']
                             }
                         });
                     }).then(function(result) {
