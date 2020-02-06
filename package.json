@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack && node Server/Server.js",
-    "hstart": "webpack && DATABASE_URL=`heroku config:get DATABASE_URL -a quiz-playground` HDRIVE_S3_ACCESS_KEY=`heroku config:get HDRIVE_S3_ACCESS_KEY -a quiz-playground` HDRIVE_S3_SECRET_KEY=`heroku config:get HDRIVE_S3_SECRET_KEY -a quiz-playground` node Server/Server.js"
+    "hstart": "webpack && DATABASE_URL=`heroku config:get DATABASE_URL -a quiz-playground` HDRIVE_S3_ACCESS_KEY=`heroku config:get HDRIVE_S3_ACCESS_KEY -a quiz-playground` HDRIVE_S3_SECRET_KEY=`heroku config:get HDRIVE_S3_SECRET_KEY -a quiz-playground` KAFKA_URL=`heroku config:get KAFKA_URL -a quiz-playground` KAFKA_CLIENT_CERT=`heroku config:get KAFKA_CLIENT_CERT -a quiz-playground` KAFKA_CLIENT_CERT_KEY=`heroku config:get KAFKA_CLIENT_CERT_KEY -a quiz-playground` node Server/Server.js"
   },
   "author": "",
   "license": "ISC",
@@ -28,6 +28,7 @@
     "history": "^4.5.1",
     "multer": "^1.4.2",
     "multer-s3": "^2.9.0",
+    "no-kafka": "^3.4.3",
     "path": "^0.12.7",
     "pg": "^7.8.0",
     "react": "^15.4.2",

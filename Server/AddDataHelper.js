@@ -7,12 +7,21 @@
 let { Client } = require('pg'),
     multer = require('multer'),
     multerS3 = require('multer-s3'),
-    AWS = require("aws-sdk");
+    AWS = require("aws-sdk"),
+    Kafka = require('no-kafka');
 
 var s3  = new AWS.S3({
   accessKeyId: process.env.HDRIVE_S3_ACCESS_KEY,
   secretAccessKey: process.env.HDRIVE_S3_SECRET_KEY,
   region: 'us-east-1'
+});
+
+var producer = new Kafka.Producer({
+    connectionString: process.env.KAFKA_URL,
+    ssl: {
+        cert: process.env.KAFKA_CLIENT_CERT,
+        key: process.env.KAFKA_CLIENT_CERT_KEY
+    }
 });
 
 var upload = multer({
@@ -89,7 +98,21 @@ class AddDataHelper {
                     reject(err);
                 } else {
                     console.log('upload success');
-                    resolve();
+                    var filePathAndName = 'quizs/' + req.headers.pg_id + '/questions__' + new Date().toJSON().replace(/-/g,'_').replace(/:/g,'-').replace(/\./g,'--')  + '.json';
+
+                    producer.init().then(function() {
+                        producer.send({
+                            topic: 'licking-49744.add_qs_ms',
+                            partition: 0,
+                            message: {
+                                value: filePathAndName
+                            }
+                        });
+                    }).then(function(result) {
+                        console.log('kafka result');
+                        console.log(result);
+                        resolve(result);
+                    });
                 }
             });
 
