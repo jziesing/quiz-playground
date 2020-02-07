@@ -100,13 +100,17 @@ class AddDataHelper {
                 } else {
                     console.log('upload success');
                     console.log(req.headers['file_path_s']);
-                    
+                    // add sfid of quiz
+                    let msgData = {
+                        file_path: req.headers['file_path_s'],
+                        quiz_sfid: req.headers['sfid']
+                    }
                     producer.init().then(function() {
                         producer.send({
                             topic: 'licking-49744.add_qs_ms',
                             partition: 0,
                             message: {
-                                value: req.headers['file_path_s']
+                                value: JSON.stringify(msgData)
                             }
                         });
                     }).then(function(result) {
