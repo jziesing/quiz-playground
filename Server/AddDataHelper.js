@@ -107,7 +107,7 @@ class AddDataHelper {
                     }
                     producer.init().then(function() {
                         producer.send({
-                            topic: 'add_qs_ms',
+                            topic: 'potomac-66595.add_qs_ms',
                             partition: 0,
                             message: {
                                 value: JSON.stringify(msgData)
