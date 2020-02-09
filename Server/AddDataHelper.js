@@ -107,7 +107,7 @@ class AddDataHelper {
                     }
                     producer.init().then(function() {
                         producer.send({
-                            topic: 'licking-49744.add_qs_ms',
+                            topic: 'add_qs_ms',
                             partition: 0,
                             message: {
                                 value: JSON.stringify(msgData)
